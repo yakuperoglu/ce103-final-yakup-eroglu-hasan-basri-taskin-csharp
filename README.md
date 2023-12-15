@@ -424,49 +424,49 @@ dotnet --version
 ### Create Solution with Name
 
 ```batch
-dotnet new sln -n CalculatorLibrary
+dotnet new sln -n LibrarysystemLibrary
 ```
 
 ### Create Project Class Library with Name
 
 ```batch
-dotnet new classlib -n CalculatorLibrary
+dotnet new classlib -n LibrarysystemLibrary
 ```
 
 ### Add Project to Solution
 
 ```batch
- dotnet sln add CalculatorLibrary
+ dotnet sln add LibrarysystemLibrary
 ```
 
 ### Create XUnit Test for Project
 
 ```batch
-dotnet new xunit -n CalculatorLibrary.Tests
+dotnet new xunit -n LibrarysystemLibrary.Tests
 ```
 
 ### Add Project to UnitTest Dependecy
 
 ```batch
-dotnet add CalculatorLibrary.Tests/CalculatorLibrary.Tests.csproj reference CalculatorLibrary/CalculatorLibrary.csproj
+dotnet add LibrarysystemLibrary.Tests/LibrarysystemLibrary.Tests.csproj reference LibrarysystemLibrary/LibrarysystemLibrary.csproj
 ```
 
 ### Add Consol Application
 
 ```batch
-dotnet new console -n CalculatorApp
+dotnet new console -n LibrarysystemApp
 ```
 
 ### Add Console Application to Solution
 
 ```batch
-dotnet sln add CalculatorApp
+dotnet sln add LibrarysystemApp
 ```
 
 ### Add Library to Application Dependecy
 
 ```batch
-dotnet add CalculatorApp/CalculatorApp.csproj reference CalculatorLibrary/CalculatorLibrary.csproj
+dotnet add LibrarysystemApp/LibrarysystemApp.csproj reference LibrarysystemLibrary/LibrarysystemLibrary.csproj
 ```
 
 After this step commit and push your work. 
