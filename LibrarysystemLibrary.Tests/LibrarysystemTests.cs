@@ -1420,6 +1420,59 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
 
+        [Fact]
+        public void TestMarkAsRead_ShouldntUpdateBookAndReturnFalse()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            bool result = library.MarkAsRead(2, testFilePathBooks);
+
+            string expectedOutput =
+                "There is no book you want!\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestViewHistory_ShouldWriteMarkedBooksToConsole()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.ViewHistory(testFilePathBooks);
+
+            string expectedOutput =
+                "Marked Books:\r\n2. Book2 (Read : Wishlist)\r\n3. Book3 (Read : Wishlist)\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+
         private void CreateTestFile()
         {
             //Books
