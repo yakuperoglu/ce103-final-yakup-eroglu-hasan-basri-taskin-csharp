@@ -208,5 +208,86 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return false;
         }
+        /**
+* @brief Displays the menu for updating a book and handles the user input.
+* @param pathFileBooks The file path for storing book information.
+* @return True to indicate successful execution.
+*/
+        public bool UpdateBookMenu(string pathFileBooks)
+        {
+            ClearScreen();
+            WriteBooksToConsole(pathFileBooks);
+            Console.Write("Enter a number to update book: ");
+            int bookId;
+
+            if (!int.TryParse(Console.ReadLine(), out bookId))
+            {
+                HandleInputError();
+                EnterToContinue();
+                return false;
+            }
+
+            Console.Write("Enter the new name for the book: ");
+            string newBookName = Console.ReadLine();
+
+
+            UpdateBook(bookId, newBookName, pathFileBooks);
+            return true;
+        }
+        /**
+ * @brief Updates the name of a book in the library based on the provided book ID.
+ * @param bookId The unique identifier of the book to be updated.
+ * @param newBookName The new name for the book.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True to indicate successful execution.
+ */
+        public bool UpdateBook(int bookId, string newBookName, string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileBooks, FileMode.Create)))
+            {
+                foreach (Book book in books)
+                {
+                    if (book.Id != bookId)
+                    {
+                        writer.Write(book.Id);
+                        writer.Write(book.Name);
+                        writer.Write(book.IsMarked);
+                        writer.Write(book.IsWishlist);
+                        writer.Write(book.IsLoaned);
+                    }
+                    else
+                    {
+                        writer.Write(book.Id);
+                        writer.Write(newBookName);
+                        writer.Write(book.IsMarked);
+                        writer.Write(book.IsWishlist);
+                        writer.Write(book.IsLoaned);
+                        isFound = true;
+                    }
+                }
+            }
+
+            if (isFound)
+            {
+                Console.WriteLine($"Book with ID '{newBookName}' has been updated successfully.");
+                EnterToContinue();
+                return true;
+            }
+            Console.WriteLine($"There is no book you want!");
+            EnterToContinue();
+            return false;
+        }
+        /**
+         * @brief Gets a new unique identifier for a book based on the existing book count.
+         * @param pathFileBooks The file path for storing book information.
+         * @return The new unique identifier for a book.
+         */
+        public int GetNewId(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks); // Dosya yolu parametresi eklenmiş LoadBooks çağrısı
+            return books.Count + 1;
+        }
     }
 }
