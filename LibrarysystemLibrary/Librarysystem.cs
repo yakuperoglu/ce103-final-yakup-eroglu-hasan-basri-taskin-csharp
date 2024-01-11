@@ -1,42 +1,55 @@
-﻿namespace LibrarysystemLibrary {
-/// \brief A class for performing basic arithmetic operations.
-public class Librarysystem {
-  /// \brief Adds two integers.
-  /// \param a The first integer to add.
-  /// \param b The second integer to add.
-  /// \return The sum of \a a and \a b.
-  public int Add(int a, int b) {
-    return a + b;
-  }
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Reflection.PortableExecutable;
 
-  /// \brief Subtracts two integers.
-  /// \param a The first integer to subtract from.
-  /// \param b The second integer to subtract.
-  /// \return The result of subtracting \a b from \a a.
-  public int Subtract(int a, int b) {
-    return a - b;
-  }
-
-  /// \brief Multiplies two integers.
-  /// \param a The first integer to multiply.
-  /// \param b The second integer to multiply.
-  /// \return The product of \a a and \a b.
-  public int Multiply(int a, int b) {
-    return a * b;
-  }
-
-  /// \brief Divides two integers.
-  /// \param a The numerator.
-  /// \param b The denominator.
-  /// \return The result of dividing \a a by \a b.
-  /// \throw DivideByZeroException if \a b is zero.
-  public int Divide(int a, int b) {
-    if (b == 0) {
-      throw new DivideByZeroException();
+namespace LibrarysystemLibrary
+{
+    public class Book
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsMarked { get; set; }
+        public bool IsWishlist { get; set; }
+        public bool IsLoaned { get; set; }
     }
 
-    return a / b;
-  }
+    public class User
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 
-}
+    public class Librarysystem
+    {
+        public bool IsTestMode { get; set; } = false;
+
+        public bool HandleInputError()
+        {
+            Console.WriteLine("Only enter numerical value");
+            return false;
+        }
+
+        public void ClearScreen()
+        {
+            if (IsTestMode)
+            {
+                return; // Test modundayken konsolu temizleme
+            }
+
+            Console.Clear();
+        }
+
+        public bool EnterToContinue()
+        {
+            Console.WriteLine("Press any key to continue...");
+            if (!IsTestMode)
+            {
+                Console.ReadKey();
+            }
+
+            return true;
+        }
+    }
 }
