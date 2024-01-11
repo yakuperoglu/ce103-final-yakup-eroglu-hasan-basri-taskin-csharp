@@ -1275,5 +1275,82 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return false;
         }
+
+        /**
+ * @brief Displays the menu for marking a book as read and handles user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is successfully marked as read; otherwise, false.
+ */
+        public bool MarkAsReadMenu(string pathFileBooks)
+        {
+            ClearScreen();
+            WriteUnMarkedBooksToConsole(pathFileBooks);
+
+            Console.Write("\nEnter the ID of the book to mark as read: ");
+            if (!int.TryParse(Console.ReadLine(), out int bookId))
+            {
+                HandleInputError();
+                EnterToContinue();
+                return false;
+            }
+
+            return MarkAsRead(bookId, pathFileBooks);
+        }
+        /**
+ * @brief Displays the history of marked books.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the marked books are successfully displayed; otherwise, false.
+ */
+        public bool ViewHistory(string pathFileBooks)
+        {
+            ClearScreen();
+            Console.WriteLine("Marked Books:");
+            bool result = WriteMarkedBooksToConsole(pathFileBooks);
+            EnterToContinue();
+            return result;
+        }
+        /**
+ * @brief Marks a book as read based on the provided book ID.
+ * @param bookId The unique identifier of the book to be marked as read.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is successfully marked as read; otherwise, false.
+ */
+        public bool MarkAsRead(int bookId, string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileBooks, FileMode.Create)))
+            {
+                foreach (Book book in books)
+                {
+                    writer.Write(book.Id);
+                    writer.Write(book.Name);
+                    if (book.Id == bookId && !book.IsMarked)
+                    {
+                        writer.Write(true);
+                        isFound = true;
+                    }
+                    else
+                    {
+                        writer.Write(book.IsMarked);
+
+                    }
+                    writer.Write(book.IsWishlist);
+                    writer.Write(book.IsLoaned);
+
+
+                }
+            }
+
+            if (isFound)
+            {
+                Console.WriteLine($"Book with ID '{bookId}' has been updated successfully.");
+                EnterToContinue();
+                return true;
+            }
+            Console.WriteLine($"There is no book you want!");
+            EnterToContinue();
+            return false;
+        }
     }
 }
