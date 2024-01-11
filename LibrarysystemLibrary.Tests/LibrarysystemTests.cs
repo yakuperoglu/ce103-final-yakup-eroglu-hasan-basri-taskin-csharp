@@ -139,6 +139,103 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+
+
+        [Fact]
+        public void TestMain_Menu_DefaultChoice_ShouldPrintInvalidChoiceAndExit()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var input = new StringReader("abc\n1231231234\n4");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            int result = library.Main_Menu(testFilePathUsers, testFilePathBooks);
+
+
+
+            // Assert
+            string expectedOutput =
+                "Welcome To Personal Library System\n\n\r\n1. Login\r\n2. Register\r\n3. Guest Mode\r\n4. Exit Program\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nWelcome To Personal Library System\n\n\r\n1. Login\r\n2. Register\r\n3. Guest Mode\r\n4. Exit Program\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nWelcome To Personal Library System\n\n\r\n1. Login\r\n2. Register\r\n3. Guest Mode\r\n4. Exit Program\r\nPlease enter a number to select:\r\nExit Program\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.Equal(0, result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestRegisterUser_ShouldRegisterUser()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            // Arrange
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            // Act
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            using (var inputStream = new StringReader("test@example.com\ntestpassword"))
+            {
+                Console.SetIn(inputStream);
+
+                library.RegisterMenu(testFilePathUsers);
+            }
+
+            // Assert
+            string expectedOutput =
+                "Enter email: Enter password: User registered successfully.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestLoginUser_ShouldLoginUserSuccessfully()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var testUser = new User { Email = "test@example.com", Password = "testpassword" };
+            library.RegisterUser(testUser, testFilePathUsers);
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            using (var inputStream = new StringReader("test@example.com\ntestpassword"))
+            {
+                Console.SetIn(inputStream);
+
+                library.LoginUserMenu(testFilePathUsers);
+            }
+
+            // Assert
+            string expectedOutput =
+                "Enter email: Enter password: Login successful.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
         private void CreateTestFile()
         {
             //Books
