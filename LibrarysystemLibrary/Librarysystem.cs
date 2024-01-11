@@ -370,5 +370,114 @@ namespace LibrarysystemLibrary
             }
             return true;
         }
+        /**
+ * @brief Writes information about unborrowed books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are unborrowed books; otherwise, false.
+ */
+        public bool WriteUnBorrowedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (!book.IsLoaned)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+
+            if (!isFound)
+            {
+                Console.WriteLine("There are no books to borrow.");
+                return false;
+            }
+            return true;
+        }
+        /**
+ * @brief Writes information about borrowed books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are borrowed books; otherwise, false.
+ */
+        public bool WriteBorrowedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (book.IsLoaned)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+            if (!isFound)
+            {
+                Console.WriteLine("There are no books to give back.");
+                return false;
+            }
+            return true;
+        }
+        /**
+ * @brief Writes information about marked books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are marked books; otherwise, false.
+ */
+        public bool WriteMarkedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (book.IsMarked)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+            if (!isFound)
+            {
+                Console.WriteLine("There are no marked books.");
+                return false;
+            }
+            return true;
+        }
+        /**
+ * @brief Writes information about unmarked books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are unmarked books; otherwise, false.
+ */
+        public bool WriteUnMarkedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (!book.IsMarked)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+            if (!isFound)
+            {
+                Console.WriteLine("There are no unmarked books.");
+                return false;
+            }
+            return true;
+        }
     }
 }
