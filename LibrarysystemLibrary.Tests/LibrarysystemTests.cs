@@ -736,6 +736,101 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+
+        [Fact]
+        public void TestWriteBorrowedBooksToConsole_ShouldntFindBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteBorrowedBooksToConsole(testFilePathBooks);
+
+            string expectedOutput =
+                "There are no books to give back.\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestViewBorrowedBooks_ShouldDisplayBooksAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.ViewBorrowedBooks(testFilePathBooks);
+
+            string expectedOutput =
+                "2. Book2 (Read : Wishlist)\r\n4. Book4 (Unread : UnWishlisted)\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestBorrowBookMenu_ShouldBorrowBookAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var input = new StringReader("1");
+            Console.SetIn(input);
+
+            bool result = library.BorrowBookMenu(testFilePathBooks);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestBorrowBookMenu_ShouldNotBorrowBookAndReturnFalse()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var input = new StringReader("2");
+            Console.SetIn(input);
+
+            bool result = library.BorrowBookMenu(testFilePathBooks);
+
+            Assert.False(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
         private void CreateTestFile()
         {
             //Books
