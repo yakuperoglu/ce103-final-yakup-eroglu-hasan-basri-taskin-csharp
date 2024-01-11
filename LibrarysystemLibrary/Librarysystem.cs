@@ -1068,5 +1068,109 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return false;
         }
+
+        private bool LoanManagementMenu()
+        {
+            ClearScreen();
+            Console.WriteLine("Loan Management Menu\n\n");
+            Console.WriteLine("1. Give Book");
+            Console.WriteLine("2. Borrow Book");
+            Console.WriteLine("3. View Borrowed Books");
+            Console.WriteLine("4. Return to Main Menu");
+            Console.WriteLine("Please enter a number to select:");
+            return true;
+        }
+        /**
+ * @brief Displays the wishlist menu options to the console.
+ * @return True to indicate successful execution.
+ */
+        public bool WishListMenu()
+        {
+            ClearScreen();
+            Console.WriteLine("Welcome to WishlistManageMenu\n\n");
+            Console.WriteLine("1. View Wishlist");
+            Console.WriteLine("2. Add To Wishlist");
+            Console.WriteLine("3. Remove From Wishlist");
+            Console.WriteLine("4. Return User Operations");
+            Console.WriteLine("Please enter a number to select:");
+
+            return true;
+        }
+        /**
+ * @brief Performs wishlist operations based on user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if wishlist operations are successful; otherwise, false.
+ */
+        public bool WishList(string pathFileBooks)
+        {
+            int choice;
+
+            while (true)
+            {
+                WishListMenu();
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        ListWishList(pathFileBooks);
+                        break;
+
+                    case 2:
+                        AddToWishListMenu(pathFileBooks);
+                        break;
+
+                    case 3:
+                        RemoveFromWishListMenu(pathFileBooks);
+                        break;
+
+                    case 4:
+                        return false;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+        }
+        /**
+ * @brief Lists the books in the wishlist to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if wishlist is successfully listed; otherwise, false.
+ */
+        public bool ListWishList(string pathFileBooks)
+        {
+            ClearScreen();
+            bool result = WriteWhislistedBooksToConsole(pathFileBooks);
+            EnterToContinue();
+            return result;
+        }
+        /**
+ * @brief Displays the menu for removing a book from the wishlist and handles user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is successfully removed from the wishlist; otherwise, false.
+ */
+        public bool RemoveFromWishListMenu(string pathFileBooks)
+        {
+            ClearScreen();
+            // Wishlisted olan kitapları yazdır
+            WriteWhislistedBooksToConsole(pathFileBooks);
+
+            Console.Write("Enter the ID of the book you want to remove from your wishlist: ");
+            if (!int.TryParse(Console.ReadLine(), out int bookId))
+            {
+                HandleInputError();
+                EnterToContinue();
+                return false;
+            }
+
+
+            return RemoveFromWishList(bookId, pathFileBooks);
+        }
     }
 }
