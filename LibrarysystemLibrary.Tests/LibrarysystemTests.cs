@@ -1342,6 +1342,83 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+        [Fact]
+        public void TestMarkAsReadMenu_InputError()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+            Console.SetIn(new StringReader("qwe"));
+
+            bool result = library.MarkAsReadMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "There are no unmarked books.\r\n\nEnter the ID of the book to mark as read: Only enter numerical value\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestMarkAsReadMenu_ShouldWriteMarkedBooksAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+            Console.SetIn(new StringReader("4"));
+
+            bool result = library.MarkAsReadMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "1. Book1 (Unread : UnWishlisted)\r\n4. Book4 (Unread : UnWishlisted)\r\n\nEnter the ID of the book to mark as read: Book with ID '4' has been updated successfully.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestMarkAsRead_ShouldUpdateBookAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            bool result = library.MarkAsRead(1, testFilePathBooks);
+
+            string expectedOutput =
+                "Book with ID '1' has been updated successfully.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
 
         private void CreateTestFile()
         {
