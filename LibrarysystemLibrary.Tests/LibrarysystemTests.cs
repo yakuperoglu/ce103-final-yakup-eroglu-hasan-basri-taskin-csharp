@@ -140,7 +140,6 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
 
-
         [Fact]
         public void TestMain_Menu_DefaultChoice_ShouldPrintInvalidChoiceAndExit()
         {
@@ -293,8 +292,6 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
-
-
         [Fact]
         public void TestViewCatalog_ShouldntDisplayBooks()
         {
@@ -608,7 +605,6 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
-
         [Fact]
         public void TestUpdateBookMenu_InvalidBookId_ShouldPrintErrorMessage()
         {
@@ -945,7 +941,6 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
-
         [Fact]
         public void TestWishList_InvalidOption()
         {
@@ -993,6 +988,61 @@ namespace LibrarysystemLibrary.Tests
                 "2. Book2 (Read : Wishlist)\r\n3. Book3 (Read : Wishlist)\r\nPress any key to continue...\r\n";
 
             Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestRemoveFromWishListMenu_InputError()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+            Console.SetIn(new StringReader("qwe"));
+
+            bool result = library.RemoveFromWishListMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "You bought all the books on your wish list.\r\nEnter the ID of the book you want to remove from your wishlist: Only enter numerical value\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestRemoveFromWishListMenu_ShouldRemoveBookAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var input = new StringReader("2\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            CreateTestFile();
+
+            bool result = library.RemoveFromWishListMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "2. Book2 (Read : Wishlist)\r\n3. Book3 (Read : Wishlist)\r\nEnter the ID of the book you want to remove from your wishlist: Book with ID '2' has been removed from your wishlist.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
             Assert.True(result);
 
             // Clean up
@@ -1245,6 +1295,10 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+        //---------------------------------------------
+        //---------------------------------------------
+        //---------------------------------------------
+        //---------------------------------------------
         [Fact]
         public void TestWriteUnMarkedBooksToConsole_NoUnmarkedBooks()
         {
@@ -1419,7 +1473,6 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
-
         [Fact]
         public void TestMarkAsRead_ShouldntUpdateBookAndReturnFalse()
         {
@@ -1466,6 +1519,60 @@ namespace LibrarysystemLibrary.Tests
 
             Assert.Equal(expectedOutput, consoleOutput.ToString());
             Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestViewHistory_ShouldntWriteMarkedBooksToConsole()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.ViewHistory(testFilePathBooks);
+
+            string expectedOutput =
+                "Marked Books:\r\nThere are no marked books.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestReadingTracker_ReturnsFalseOnReturnToUserOperations()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+            CreateTestFile();
+
+            var input = new StringReader("qwe\n321\n1\n2\n1\n3\n\n4");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            bool result = library.ReadingTracker(testFilePathBooks);
+
+            string expectedOutput =
+                "Welcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nPress any key to continue...\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\n1. Book1 (Unread: UnWishlisted)\r\n2. Book2 (Read: Wishlist)\r\n3. Book3 (Read: Wishlist)\r\n4. Book4 (Unread: UnWishlisted)\r\nPress any key to continue...\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\n1. Book1 (Unread : UnWishlisted)\r\n4. Book4 (Unread : UnWishlisted)\r\n\nEnter the ID of the book to mark as read: Book with ID '1' has been updated successfully.\r\nPress any key to continue...\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nMarked Books:\r\n1. Book1 (Read : UnWishlisted)\r\n2. Book2 (Read : Wishlist)\r\n3. Book3 (Read : Wishlist)\r\nPress any key to continue...\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nPress any key to continue...\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
 
             // Clean up
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
