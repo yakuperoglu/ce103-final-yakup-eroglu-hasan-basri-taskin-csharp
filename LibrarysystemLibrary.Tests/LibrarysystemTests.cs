@@ -236,6 +236,89 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+        [Fact]
+        public void TestLoginUser_InvalidInput_ShouldPrintErrorMessage()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var testUser = new User { Email = "test@example.com", Password = "testpassword" };
+            library.RegisterUser(testUser, testFilePathUsers);
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            using (var inputStream = new StringReader("invalidemail\ninvalidpassword"))
+            {
+                Console.SetIn(inputStream);
+
+                library.LoginUserMenu(testFilePathUsers);
+            }
+
+            string expectedOutput =
+                "Enter email: Enter password: Invalid email or password. Please try again.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestViewCatalog_ShouldDisplayBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            // Act
+            library.ViewCatalog(testFilePathBooks);
+
+            // Assert
+            string expectedOutput =
+                "1. Book1 (Unread: UnWishlisted)\r\n2. Book2 (Read: Wishlist)\r\n3. Book3 (Read: Wishlist)\r\n4. Book4 (Unread: UnWishlisted)\r\nPress any key to continue...\r\n";
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestViewCatalog_ShouldntDisplayBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            library.ViewCatalog(testFilePathBooks);
+
+            // Assert
+            string expectedOutput =
+                "There are no books.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
         private void CreateTestFile()
         {
             //Books
