@@ -820,5 +820,68 @@ namespace LibrarysystemLibrary
 
             return true;
         }
+        /**
+ * @brief Displays the book cataloging menu options to the console.
+ * @return True to indicate successful execution.
+ */
+        public bool BookCatalogingMenu()
+        {
+            ClearScreen();
+            Console.WriteLine("Welcome to Book Operations\n\n");
+            Console.WriteLine("1. Add Book");
+            Console.WriteLine("2. Delete Book");
+            Console.WriteLine("3. Update Book");
+            Console.WriteLine("4. View Catalog");
+            Console.WriteLine("5. Return User Operations");
+            Console.WriteLine("Please enter a number to select:");
+
+            return true;
+        }
+        /**
+ * @brief Performs book cataloging operations based on user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if book cataloging operations are successful; otherwise, false.
+ */
+        public bool BookCataloging(string pathFileBooks)
+        {
+            int choice;
+
+            while (true)
+            {
+                BookCatalogingMenu();
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        AddBookMenu(pathFileBooks);
+                        break;
+
+                    case 2:
+                        DeleteBookMenu(pathFileBooks);
+                        break;
+
+                    case 3:
+                        UpdateBookMenu(pathFileBooks);
+                        break;
+
+                    case 4:
+                        ViewCatalog(pathFileBooks);
+                        break;
+
+                    case 5:
+                        return false;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+        }
     }
 }
