@@ -371,6 +371,93 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
 
+        [Fact]
+        public void TestGuestOperation_ShouldDisplayMenuAndExit()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var input = new StringReader("abc\n321312\n1\n4\n2");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            bool result = library.GuestOperation(testFilePathUsers);
+
+            string expectedOutput =
+                "Guest Operations\n\n\r\n1. View Catalog\r\n2. Return to Main Menu\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nGuest Operations\n\n\r\n1. View Catalog\r\n2. Return to Main Menu\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nGuest Operations\n\n\r\n1. View Catalog\r\n2. Return to Main Menu\r\nPlease enter a number to select:\r\nThere are no books.\r\nPress any key to continue...\r\nGuest Operations\n\n\r\n1. View Catalog\r\n2. Return to Main Menu\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nGuest Operations\n\n\r\n1. View Catalog\r\n2. Return to Main Menu\r\nPlease enter a number to select:\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestDeleteBookMenu_SuccessfulDeletion()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var input = new StringReader("2");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            bool result = library.DeleteBookMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "1. Book1 (Unread: UnWishlisted)\r\n2. Book2 (Read: Wishlist)\r\n3. Book3 (Read: Wishlist)\r\n4. Book4 (Unread: UnWishlisted)\r\nEnter a number to delete book: Book with ID '2' has been deleted successfully.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestDeleteBookMenu_ShouldInvalidInput()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var input = new StringReader("qwe");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            bool result = library.DeleteBookMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "1. Book1 (Unread: UnWishlisted)\r\n2. Book2 (Read: Wishlist)\r\n3. Book3 (Read: Wishlist)\r\n4. Book4 (Unread: UnWishlisted)\r\nEnter a number to delete book: Only enter numerical value\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
         private void CreateTestFile()
         {
             //Books
