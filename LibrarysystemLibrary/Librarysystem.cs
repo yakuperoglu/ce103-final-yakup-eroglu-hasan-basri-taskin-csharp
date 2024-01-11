@@ -1172,5 +1172,108 @@ namespace LibrarysystemLibrary
 
             return RemoveFromWishList(bookId, pathFileBooks);
         }
+        /**
+ * @brief Removes a book from the user's wishlist based on the provided book ID.
+ * @param bookId The unique identifier of the book to be removed from the wishlist.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is successfully removed from the wishlist; otherwise, false.
+ */
+        public bool RemoveFromWishList(int bookId, string pathFileBooks)
+        {
+            // Kitapları yükle ve IsWishlist özelliğini güncelle
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileBooks, FileMode.Create)))
+            {
+                foreach (Book book in books)
+                {
+                    if (book.Id == bookId && book.IsWishlist)
+                    {
+                        isFound = true;
+                        book.IsWishlist = false;
+                    }
+
+                    writer.Write(book.Id);
+                    writer.Write(book.Name);
+                    writer.Write(book.IsMarked);
+                    writer.Write(book.IsWishlist);
+                    writer.Write(book.IsLoaned);
+                }
+            }
+
+            if (isFound)
+            {
+                Console.WriteLine($"Book with ID '{bookId}' has been removed from your wishlist.");
+                EnterToContinue();
+                return true;
+            }
+
+            Console.WriteLine($"There is no wishlisted book with ID '{bookId}'.");
+            EnterToContinue();
+            return false;
+        }
+        /**
+ * @brief Displays the menu for adding a book to the user's wishlist and handles user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is successfully added to the wishlist; otherwise, false.
+ */
+        public bool AddToWishListMenu(string pathFileBooks)
+        {
+            ClearScreen();
+            // Kitapları yazdır
+            WriteUnWhislistedBooksToConsole(pathFileBooks);
+
+            Console.Write("Enter the ID of the book you want to add to your wishlist: ");
+            if (!int.TryParse(Console.ReadLine(), out int bookId))
+            {
+                HandleInputError();
+                EnterToContinue();
+                return false;
+            }
+
+            return AddToWishList(bookId, pathFileBooks);
+        }
+        /**
+ * @brief Adds a book to the user's wishlist based on the provided book ID.
+ * @param bookId The unique identifier of the book to be added to the wishlist.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is successfully added to the wishlist; otherwise, false.
+ */
+        public bool AddToWishList(int bookId, string pathFileBooks)
+        {
+            // Kitapları yükle ve IsWishlist özelliğini güncelle
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileBooks, FileMode.Create)))
+            {
+                foreach (Book book in books)
+                {
+                    if (book.Id == bookId && !book.IsWishlist)
+                    {
+                        isFound = true;
+                        book.IsWishlist = true;
+                    }
+
+                    writer.Write(book.Id);
+                    writer.Write(book.Name);
+                    writer.Write(book.IsMarked);
+                    writer.Write(book.IsWishlist);
+                    writer.Write(book.IsLoaned);
+                }
+            }
+
+            if (isFound)
+            {
+                Console.WriteLine($"Book with ID '{bookId}' has been added to your wishlist.");
+                EnterToContinue();
+                return true;
+            }
+
+            Console.WriteLine($"There is no book with ID '{bookId}'.");
+            EnterToContinue();
+            return false;
+        }
     }
 }
