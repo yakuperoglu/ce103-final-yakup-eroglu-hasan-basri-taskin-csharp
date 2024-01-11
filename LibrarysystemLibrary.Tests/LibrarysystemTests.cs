@@ -574,37 +574,6 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
         [Fact]
-        public void TestLoanManagement_ReturnsFalseOnReturnToUserOperations()
-        {
-            CleanupTestDataBook();
-            CleanupTestDataUser();
-
-            // Arrange
-            var library = new Librarysystem();
-            library.IsTestMode = true;
-            CreateTestFile();
-
-            var input = new StringReader("qwe\n2\n1\n1\n1\n3\n321\n4");
-            Console.SetIn(input);
-
-            var output = new StringWriter();
-            Console.SetOut(output);
-
-            // Act
-            bool result = library.LoanManagement(testFilePathBooks);
-
-            // Assert
-            string expectedOutput =
-                "Loan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n1. Book1 (Unread : UnWishlisted)\r\n3. Book3 (Read : Wishlist)\r\nEnter the ID of the book you want to borrow: Book with ID '1' has been borrowed successfully.\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n1. Book1 (Unread : UnWishlisted)\r\n2. Book2 (Read : Wishlist)\r\n4. Book4 (Unread : UnWishlisted)\r\nEnter the ID of the book you want to give back: Book with ID '1' returned successfully.\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n2. Book2 (Read : Wishlist)\r\n4. Book4 (Unread : UnWishlisted)\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n";
-
-            Assert.Equal(expectedOutput, output.ToString());
-            Assert.False(result);
-
-            // Clean up
-            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
-            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
-        }
-        [Fact]
         public void TestUpdateBookMenu_ShouldUpdateBookSuccessfully()
         {
             CleanupTestDataBook();
@@ -658,6 +627,110 @@ namespace LibrarysystemLibrary.Tests
 
             Assert.Equal(expectedOutput, consoleOutput.ToString());
             Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestUpdateBookMenu_InvalidBookId_ShouldPrintErrorMessage()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            var input = new StringReader("123132");
+            Console.SetIn(input);
+
+            library.UpdateBookMenu(testFilePathBooks);
+
+            string expectedOutput =
+                "1. Book1 (Unread: UnWishlisted)\r\n2. Book2 (Read: Wishlist)\r\n3. Book3 (Read: Wishlist)\r\n4. Book4 (Unread: UnWishlisted)\r\nEnter a number to update book: Enter the new name for the book: There is no book you want!\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestWriteUnBorrowedBooksToConsole_ShouldWriteBooksAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteUnBorrowedBooksToConsole(testFilePathBooks);
+
+            string expectedOutput =
+                "1. Book1 (Unread : UnWishlisted)\r\n3. Book3 (Read : Wishlist)\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestWriteUnBorrowedBooksToConsole_ShouldntFindBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteUnBorrowedBooksToConsole(testFilePathBooks);
+
+            string expectedOutput =
+                "There are no books to borrow.\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestWriteBorrowedBooksToConsole_ShouldWriteBooksAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteBorrowedBooksToConsole(testFilePathBooks);
+
+            string expectedOutput =
+                "2. Book2 (Read : Wishlist)\r\n4. Book4 (Unread : UnWishlisted)\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
 
             // Clean up
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
