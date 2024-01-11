@@ -602,5 +602,89 @@ namespace LibrarysystemLibrary
             Console.WriteLine("Please enter a number to select:");
             return true;
         }
+
+        /**
+ * @brief Displays the login menu and handles user input.
+ * @param pathFile The file path for storing user information.
+ * @return True if the login is successful; otherwise, false.
+ */
+        public bool LoginUserMenu(string pathFile)
+        {
+            ClearScreen();
+            User loginUser = new User();
+            Console.Write("Enter email: ");
+            loginUser.Email = Console.ReadLine();
+
+            Console.Write("Enter password: ");
+            loginUser.Password = Console.ReadLine();
+            return LoginUser(loginUser, pathFile);
+        }
+        /**
+ * @brief Attempts to log in a user with the provided credentials.
+ * @param user The User object containing the login credentials.
+ * @param pathFile The file path for storing user information.
+ * @return True if the login is successful; otherwise, false.
+ */
+        public bool LoginUser(User user, string pathFile)
+        {
+            if (File.Exists(pathFile))
+            {
+                using (BinaryReader reader = new BinaryReader(File.Open(pathFile, FileMode.Open)))
+                {
+                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
+                        User existingUser = new User
+                        {
+                            Email = reader.ReadString(),
+                            Password = reader.ReadString()
+                        };
+
+                        if (existingUser.Email == user.Email && existingUser.Password == user.Password)
+                        {
+                            Console.WriteLine("Login successful.");
+                            EnterToContinue();
+                            //UserOperations'u çağır
+                            return true;
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("Invalid email or password. Please try again.");
+            EnterToContinue();
+            return false;
+        }
+        /**
+ * @brief Displays the registration menu and handles user input for registration.
+ * @param pathFileUsers The file path for storing user information.
+ */
+        public void RegisterMenu(string pathFileUsers)
+        {
+            ClearScreen();
+            User newUser = new User();
+            Console.Write("Enter email: ");
+            newUser.Email = Console.ReadLine();
+
+            Console.Write("Enter password: ");
+            newUser.Password = Console.ReadLine();
+            RegisterUser(newUser, pathFileUsers);
+        }
+        /**
+ * @brief Registers a new user by writing their information to the user file.
+ * @param user The User object containing the registration information.
+ * @param pathFileUsers The file path for storing user information.
+ * @return True to indicate successful user registration.
+ */
+        public bool RegisterUser(User user, string pathFileUsers)
+        {
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileUsers, FileMode.Append)))
+            {
+                writer.Write(user.Email);
+                writer.Write(user.Password);
+            }
+
+            Console.WriteLine("User registered successfully.");
+            EnterToContinue();
+            return true;
+        }
     }
 }
