@@ -319,6 +319,58 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
 
+        [Fact]
+        public void TestViewCatalog_ShouldntDisplayBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            library.ViewCatalog(testFilePathBooks);
+
+            // Assert
+            string expectedOutput =
+                "There are no books.\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestViewCatalog_ShouldDisplayNoBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            // Delete the existing file if it exists
+            if (File.Exists(testFilePathBooks))
+            {
+                File.Delete(testFilePathBooks);
+            }
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            library.ViewCatalog(testFilePathBooks);
+
+            string expectedOutput = "There are no books.\r\nPress any key to continue...\r\n";
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
         private void CreateTestFile()
         {
             //Books
