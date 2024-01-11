@@ -1145,6 +1145,108 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
 
+        [Fact]
+        public void TestWriteBooksToConsole_NoBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteBooksToConsole(testFilePathBooks);
+
+            string expectedOutput = "There are no books.\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestWriteBooksToConsole_ShouldWriteBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteBooksToConsole(testFilePathBooks);
+
+            string expectedOutput =
+                "1. Book1 (Unread: UnWishlisted)\r\n2. Book2 (Read: Wishlist)\r\n3. Book3 (Read: Wishlist)\r\n4. Book4 (Unread: UnWishlisted)\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestWriteMarkedBooksToConsole_NoMarkedBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteMarkedBooksToConsole(testFilePathBooks);
+
+            string expectedOutput = "There are no marked books.\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestWriteMarkedBooksToConsole_ShouldWriteMarkedBooks()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.WriteMarkedBooksToConsole(testFilePathBooks);
+
+            string expectedOutput =
+                "2. Book2 (Read : Wishlist)\r\n3. Book3 (Read : Wishlist)\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+
         private void CreateTestFile()
         {
             //Books
