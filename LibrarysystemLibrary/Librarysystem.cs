@@ -686,5 +686,73 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return true;
         }
+        /**
+ * @brief Displays the catalog of books to the console.
+ * @param filePathBooks The file path for storing book information.
+ */
+        public void ViewCatalog(string filePathBooks)
+        {
+            ClearScreen();
+
+            if (!File.Exists(filePathBooks))
+            {
+                Console.WriteLine("There are no books.");
+                EnterToContinue();
+                return;
+            }
+
+            WriteBooksToConsole(filePathBooks);
+
+            EnterToContinue();
+        }
+        /**
+ * @brief Displays the guest menu options to the console.
+ * @return True to indicate successful execution.
+ */
+        public bool GuestMenu()
+        {
+            ClearScreen();
+            Console.WriteLine("Guest Operations\n\n");
+            Console.WriteLine("1. View Catalog");
+            Console.WriteLine("2. Return to Main Menu");
+            Console.WriteLine("Please enter a number to select:");
+            return true;
+        }
+        /**
+ * @brief Performs guest operations based on user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if guest operations are successful; otherwise, false.
+ */
+        public bool GuestOperation(string pathFileBooks)
+        {
+            int choice;
+
+            while (true)
+            {
+                GuestMenu();
+
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        ClearScreen();
+                        ViewCatalog(pathFileBooks);
+                        break;
+
+                    case 2:
+                        return false;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+        }
     }
 }
