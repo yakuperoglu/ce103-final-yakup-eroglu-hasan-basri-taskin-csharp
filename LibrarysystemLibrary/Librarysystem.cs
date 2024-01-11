@@ -209,10 +209,10 @@ namespace LibrarysystemLibrary
             return false;
         }
         /**
-* @brief Displays the menu for updating a book and handles the user input.
-* @param pathFileBooks The file path for storing book information.
-* @return True to indicate successful execution.
-*/
+ * @brief Displays the menu for updating a book and handles the user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True to indicate successful execution.
+ */
         public bool UpdateBookMenu(string pathFileBooks)
         {
             ClearScreen();
@@ -280,10 +280,10 @@ namespace LibrarysystemLibrary
             return false;
         }
         /**
-         * @brief Gets a new unique identifier for a book based on the existing book count.
-         * @param pathFileBooks The file path for storing book information.
-         * @return The new unique identifier for a book.
-         */
+ * @brief Gets a new unique identifier for a book based on the existing book count.
+ * @param pathFileBooks The file path for storing book information.
+ * @return The new unique identifier for a book.
+ */
         public int GetNewId(string pathFileBooks)
         {
             List<Book> books = LoadBooks(pathFileBooks); // Dosya yolu parametresi eklenmiş LoadBooks çağrısı
@@ -480,33 +480,6 @@ namespace LibrarysystemLibrary
             return true;
         }
         /**
- * @brief Writes information about unmarked books to the console.
- * @param pathFileBooks The file path for storing book information.
- * @return True if there are unmarked books; otherwise, false.
- */
-        public bool WriteUnMarkedBooksToConsole(string pathFileBooks)
-        {
-            List<Book> books = LoadBooks(pathFileBooks);
-            bool isFound = false;
-            foreach (Book book in books)
-            {
-                if (!book.IsMarked)
-                {
-                    isFound = true;
-                    string readStatus = book.IsMarked ? "Read" : "Unread";
-                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
-
-                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
-                }
-            }
-            if (!isFound)
-            {
-                Console.WriteLine("There are no unmarked books.");
-                return false;
-            }
-            return true;
-        }
-        /**
  * @brief Loads books from the specified file path.
  * @param pathFileBooks The file path for storing book information.
  * @return A list of Book objects loaded from the file. If the file doesn't exist, an empty list is returned.
@@ -602,7 +575,6 @@ namespace LibrarysystemLibrary
             Console.WriteLine("Please enter a number to select:");
             return true;
         }
-
         /**
  * @brief Displays the login menu and handles user input.
  * @param pathFile The file path for storing user information.
@@ -754,7 +726,6 @@ namespace LibrarysystemLibrary
                 }
             }
         }
-
         /**
  * @brief Displays the user menu options to the console.
  */
@@ -883,7 +854,6 @@ namespace LibrarysystemLibrary
                 }
             }
         }
-
         /**
  * @brief Performs loan management operations based on user input.
  * @param pathFileBooks The file path for storing book information.
@@ -1068,7 +1038,10 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return false;
         }
-
+        /**
+ * @brief Displays the loan management menu options to the console.
+ * @return True to indicate successful execution.
+ */
         private bool LoanManagementMenu()
         {
             ClearScreen();
@@ -1275,7 +1248,18 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return false;
         }
-
+        /**
+ * @brief Logs the progress by displaying the list of books.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book list is successfully displayed; otherwise, false.
+ */
+        public bool LogProgress(string pathFileBooks)
+        {
+            ClearScreen();
+            bool result = WriteBooksToConsole(pathFileBooks);
+            EnterToContinue();
+            return result;
+        }
         /**
  * @brief Displays the menu for marking a book as read and handles user input.
  * @param pathFileBooks The file path for storing book information.
@@ -1352,5 +1336,66 @@ namespace LibrarysystemLibrary
             EnterToContinue();
             return false;
         }
+        /**
+ * @brief Manages the reading tracker operations, allowing users to log progress, mark books as read,
+ *        view the reading history, and return to user operations.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the reading tracker operations are successfully completed; otherwise, false.
+ */
+        public bool ReadingTracker(string pathFileBooks)
+        {
+            while (true)
+            {
+                ReadingTrackerMenu();
+                int choice;
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    EnterToContinue();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        LogProgress(pathFileBooks);
+                        break;
+
+                    case 2:
+                        MarkAsReadMenu(pathFileBooks);
+                        break;
+
+                    case 3:
+                        ViewHistory(pathFileBooks);
+                        break;
+
+                    case 4:
+                        return false;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+        }
+        /**
+ * @brief Displays the menu for reading tracker operations, providing options to log progress,
+ *        mark books as read, view the reading history, and return to user operations.
+ * @return True if the reading tracker menu is successfully displayed; otherwise, false.
+ */
+        public bool ReadingTrackerMenu()
+        {
+            ClearScreen();
+            Console.WriteLine("Welcome to ReadingTracker\n\n");
+            Console.WriteLine("1. Log Progress");
+            Console.WriteLine("2. Mark As Read");
+            Console.WriteLine("3. View History");
+            Console.WriteLine("4. Return User Operations");
+            Console.WriteLine("Please enter a number to select:");
+
+            return true;
+        }
+
     }
 }
