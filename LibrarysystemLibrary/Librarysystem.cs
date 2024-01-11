@@ -959,5 +959,114 @@ namespace LibrarysystemLibrary
             }
             return BorrowBook(bookId, pathFileBooks);
         }
+        /**
+ * @brief Borrows a book with the specified ID and updates the book information in the file.
+ * @param bookId The ID of the book to be borrowed.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is borrowed successfully; otherwise, false.
+ */
+        public bool BorrowBook(int bookId, string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileBooks, FileMode.Create)))
+            {
+                foreach (Book book in books)
+                {
+                    if (book.Id == bookId && !book.IsLoaned)
+                    {
+                        writer.Write(book.Id);
+                        writer.Write(book.Name);
+                        writer.Write(book.IsMarked);
+                        writer.Write(book.IsWishlist);
+                        writer.Write(true);
+                        isFound = true;
+                    }
+                    else
+                    {
+                        writer.Write(book.Id);
+                        writer.Write(book.Name);
+                        writer.Write(book.IsMarked);
+                        writer.Write(book.IsWishlist);
+                        writer.Write(book.IsLoaned);
+                    }
+                }
+            }
+
+            if (isFound)
+            {
+                Console.WriteLine($"Book with ID '{bookId}' has been borrowed successfully.");
+                EnterToContinue();
+                return true;
+            }
+            Console.WriteLine($"There is no book you want!");
+            EnterToContinue();
+            return false;
+        }
+        /**
+ * @brief Displays the give book menu options to the console and handles user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if give book operations are successful; otherwise, false.
+ */
+        public bool GiveBookMenu(string pathFileBooks)
+        {
+            ClearScreen();
+            // Kitapları yazdır
+            WriteBorrowedBooksToConsole(pathFileBooks);
+            Console.Write("Enter the ID of the book you want to give back: ");
+            int bookId;
+
+            if (!int.TryParse(Console.ReadLine(), out bookId))
+            {
+                HandleInputError();
+                EnterToContinue();
+                return false;
+            }
+            return GiveBook(bookId, pathFileBooks);
+        }
+        /**
+ * @brief Gives back a borrowed book with the specified ID and updates the book information in the file.
+ * @param bookId The ID of the book to be given back.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if the book is given back successfully; otherwise, false.
+ */
+        public bool GiveBook(int bookId, string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            using (BinaryWriter writer = new BinaryWriter(File.Open(pathFileBooks, FileMode.Create)))
+            {
+                foreach (Book book in books)
+                {
+                    if (book.Id == bookId && book.IsLoaned)
+                    {
+                        writer.Write(book.Id);
+                        writer.Write(book.Name);
+                        writer.Write(book.IsMarked);
+                        writer.Write(book.IsWishlist);
+                        writer.Write(false);
+                        isFound = true;
+                    }
+                    else
+                    {
+                        writer.Write(book.Id);
+                        writer.Write(book.Name);
+                        writer.Write(book.IsMarked);
+                        writer.Write(book.IsWishlist);
+                        writer.Write(book.IsLoaned);
+                    }
+                }
+            }
+
+            if (isFound)
+            {
+                Console.WriteLine($"Book with ID '{bookId}' returned successfully.");
+                EnterToContinue();
+                return true;
+            }
+            Console.WriteLine($"There is no book you want!");
+            EnterToContinue();
+            return false;
+        }
     }
 }
