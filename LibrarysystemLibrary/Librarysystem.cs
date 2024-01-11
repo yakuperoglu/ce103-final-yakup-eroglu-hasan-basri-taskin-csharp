@@ -883,5 +883,81 @@ namespace LibrarysystemLibrary
                 }
             }
         }
+
+        /**
+ * @brief Performs loan management operations based on user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if loan management operations are successful; otherwise, false.
+ */
+        public bool LoanManagement(string pathFileBooks)
+        {
+            int choice;
+
+            while (true)
+            {
+                LoanManagementMenu();
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        GiveBookMenu(pathFileBooks);
+                        break;
+
+                    case 2:
+                        BorrowBookMenu(pathFileBooks);
+                        break;
+
+                    case 3:
+                        ViewBorrowedBooks(pathFileBooks);
+                        break;
+
+                    case 4:
+                        return false;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+        }
+        /**
+ * @brief Displays the borrowed books to the console and prompts the user to continue.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if borrowed books are successfully displayed; otherwise, false.
+ */
+        public bool ViewBorrowedBooks(string pathFileBooks)
+        {
+            ClearScreen();
+            bool result = WriteBorrowedBooksToConsole(pathFileBooks);
+            EnterToContinue();
+            return result;
+        }
+        /**
+ * @brief Displays the borrow book menu options to the console and handles user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if borrow book operations are successful; otherwise, false.
+ */
+        public bool BorrowBookMenu(string pathFileBooks)
+        {
+            ClearScreen();
+            // Kitapları yazdır
+            WriteUnBorrowedBooksToConsole(pathFileBooks);
+            Console.Write("Enter the ID of the book you want to borrow: ");
+            int bookId;
+
+            if (!int.TryParse(Console.ReadLine(), out bookId))
+            {
+                HandleInputError();
+                EnterToContinue();
+                return false;
+            }
+            return BorrowBook(bookId, pathFileBooks);
+        }
     }
 }
