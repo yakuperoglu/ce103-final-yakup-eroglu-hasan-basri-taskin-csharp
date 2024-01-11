@@ -289,5 +289,86 @@ namespace LibrarysystemLibrary
             List<Book> books = LoadBooks(pathFileBooks); // Dosya yolu parametresi eklenmiş LoadBooks çağrısı
             return books.Count + 1;
         }
+        /**
+ * @brief Writes information about unread and unwishlist books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are unread and unwishlist books; otherwise, false.
+ */
+        public bool WriteUnWhislistedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (!book.IsWishlist)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+
+            if (!isFound)
+            {
+                Console.WriteLine("All books are on the wish list.");
+                return false;
+            }
+            return true;
+        }
+        /**
+ * @brief Writes information about wishlist books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are wishlist books; otherwise, false.
+ */
+        public bool WriteWhislistedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (book.IsWishlist)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+
+            if (!isFound)
+            {
+                Console.WriteLine("You bought all the books on your wish list.");
+                return false;
+            }
+            return true;
+        }
+        /**
+ * @brief Writes information about all books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are books; otherwise, false.
+ */
+        public bool WriteBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                isFound = true;
+                string readStatus = book.IsMarked ? "Read" : "Unread";
+                string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                Console.WriteLine($"{book.Id}. {book.Name} ({readStatus}: {wishlistStatus})");
+            }
+
+            if (!isFound)
+            {
+                Console.WriteLine("There are no books.");
+                return false;
+            }
+            return true;
+        }
     }
 }
