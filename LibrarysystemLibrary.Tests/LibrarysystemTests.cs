@@ -969,6 +969,99 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+
+        [Fact]
+        public void TestGiveBook_ShouldGiveBookBackAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            bool result = library.GiveBook(2, testFilePathBooks);
+
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestGiveBook_ShouldNotGiveBookBackAndReturnFalse()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            bool result = library.GiveBook(1, testFilePathBooks);
+
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestWishList_InvalidOption()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var input = new StringReader("312\nqwe\n4");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            bool result = library.WishList(testFilePathBooks);
+
+            string expectedOutput =
+                "Welcome to WishlistManageMenu\n\n\r\n1. View Wishlist\r\n2. Add To Wishlist\r\n3. Remove From Wishlist\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nWelcome to WishlistManageMenu\n\n\r\n1. View Wishlist\r\n2. Add To Wishlist\r\n3. Remove From Wishlist\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nWelcome to WishlistManageMenu\n\n\r\n1. View Wishlist\r\n2. Add To Wishlist\r\n3. Remove From Wishlist\r\n4. Return User Operations\r\nPlease enter a number to select:\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestListWishList_ShouldWriteBooksAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            bool result = library.ListWishList(testFilePathBooks);
+
+            string expectedOutput =
+                "2. Book2 (Read : Wishlist)\r\n3. Book3 (Read : Wishlist)\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
         private void CreateTestFile()
         {
             //Books
