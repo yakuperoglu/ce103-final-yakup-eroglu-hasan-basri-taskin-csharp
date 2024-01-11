@@ -754,5 +754,71 @@ namespace LibrarysystemLibrary
                 }
             }
         }
+
+        /**
+ * @brief Displays the user menu options to the console.
+ */
+        public void UserMenu()
+        {
+            ClearScreen();
+            Console.WriteLine("Welcome to User Operations\n\n");
+            Console.WriteLine("1. Book Cataloging");
+            Console.WriteLine("2. Loan Management");
+            Console.WriteLine("3. WishList Management");
+            Console.WriteLine("4. Reading Tracker");
+            Console.WriteLine("5. Return to Main Menu");
+            Console.WriteLine("Please enter a number to select:");
+        }
+        /**
+ * @brief Performs user operations based on user input.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if user operations are successful; otherwise, false.
+ */
+        public bool UserOperations(string pathFileBooks)
+        {
+            int choice;
+
+            while (true)
+            {
+                ClearScreen();
+                UserMenu();
+
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    EnterToContinue();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        BookCataloging(pathFileBooks);
+                        break;
+
+                    case 2:
+                        LoanManagement(pathFileBooks);
+                        break;
+
+                    case 3:
+                        WishList(pathFileBooks);
+                        break;
+
+                    case 4:
+                        ReadingTracker(pathFileBooks);
+                        break;
+
+                    case 5:
+                        return false;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+
+            return true;
+        }
     }
 }
