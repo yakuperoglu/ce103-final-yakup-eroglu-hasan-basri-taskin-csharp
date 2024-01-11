@@ -458,6 +458,121 @@ namespace LibrarysystemLibrary.Tests
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
 
+        [Fact]
+        public void TestDeleteBook_BookNotFound()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            // Act
+            var consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+
+            var result = library.DeleteBook(5, testFilePathBooks);
+
+            // Assert
+            Assert.False(result);
+
+            string expectedOutput =
+                "There is no book you want!\r\nPress any key to continue...\r\n";
+            Assert.Equal(expectedOutput, consoleOutput.ToString());
+
+            //Cleanup
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestUserOperations_ReturnsFalseOnExit()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var input = new StringReader("qwe\n1\n5\n2\n4\n3\n4\n4\n4\n321\n5");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            // Act
+            bool result = library.UserOperations(testFilePathBooks);
+
+            // Assert
+            string expectedOutput =
+                "Welcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nPress any key to continue...\r\nWelcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\nWelcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\nWelcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\nWelcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\nWelcome to WishlistManageMenu\n\n\r\n1. View Wishlist\r\n2. Add To Wishlist\r\n3. Remove From Wishlist\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nWelcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\nWelcome to ReadingTracker\n\n\r\n1. Log Progress\r\n2. Mark As Read\r\n3. View History\r\n4. Return User Operations\r\nPlease enter a number to select:\r\nWelcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nWelcome to User Operations\n\n\r\n1. Book Cataloging\r\n2. Loan Management\r\n3. WishList Management\r\n4. Reading Tracker\r\n5. Return to Main Menu\r\nPlease enter a number to select:\r\n";
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestBookCataloging_ReturnsFalseOnReturnToUserOperations()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            var input = new StringReader("qwe\n1\nqwe\n2\n1\n1\nqwe\n3\n1\nqwe1\n4\n321\n5");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            // Act
+            bool result = library.BookCataloging(testFilePathBooks);
+
+            // Assert
+            string expectedOutput =
+                "Welcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nWelcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\nEnter a book name: Welcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\n1. qwe (Unread: UnWishlisted)\r\nEnter a number to delete book: Book with ID '1' has been deleted successfully.\r\nPress any key to continue...\r\nWelcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\nEnter a book name: Welcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\n1. qwe (Unread: UnWishlisted)\r\nEnter a number to update book: Enter the new name for the book: Book with ID 'qwe1' has been updated successfully.\r\nPress any key to continue...\r\nWelcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\n1. qwe1 (Unread: UnWishlisted)\r\nPress any key to continue...\r\nWelcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nWelcome to Book Operations\n\n\r\n1. Add Book\r\n2. Delete Book\r\n3. Update Book\r\n4. View Catalog\r\n5. Return User Operations\r\nPlease enter a number to select:\r\n";
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestLoanManagement_ReturnsFalseOnReturnToUserOperations()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            // Arrange
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+            CreateTestFile();
+
+            var input = new StringReader("qwe\n2\n1\n1\n1\n3\n321\n4");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            // Act
+            bool result = library.LoanManagement(testFilePathBooks);
+
+            // Assert
+            string expectedOutput =
+                "Loan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\nOnly enter numerical value\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n1. Book1 (Unread : UnWishlisted)\r\n3. Book3 (Read : Wishlist)\r\nEnter the ID of the book you want to borrow: Book with ID '1' has been borrowed successfully.\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n1. Book1 (Unread : UnWishlisted)\r\n2. Book2 (Read : Wishlist)\r\n4. Book4 (Unread : UnWishlisted)\r\nEnter the ID of the book you want to give back: Book with ID '1' returned successfully.\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n2. Book2 (Read : Wishlist)\r\n4. Book4 (Unread : UnWishlisted)\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\nInvalid choice. Please try again.\r\nPress any key to continue...\r\nLoan Management Menu\n\n\r\n1. Give Book\r\n2. Borrow Book\r\n3. View Borrowed Books\r\n4. Return to Main Menu\r\nPlease enter a number to select:\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
         private void CreateTestFile()
         {
             //Books
