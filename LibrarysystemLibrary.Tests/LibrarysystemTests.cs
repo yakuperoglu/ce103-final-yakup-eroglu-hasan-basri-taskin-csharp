@@ -831,6 +831,144 @@ namespace LibrarysystemLibrary.Tests
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+
+        [Fact]
+        public void TestBorrowBookMenu_InvalidInputShouldReturnFalse()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var input = new StringReader("qwe");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            bool result = library.BorrowBookMenu(testFilePathBooks);
+            string expectedOutput =
+                "There are no books to borrow.\r\nEnter the ID of the book you want to borrow: Only enter numerical value\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestGiveBookMenu_InvalidInput()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var input = new StringReader("qwe");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            bool result = library.GiveBookMenu(testFilePathBooks);
+            string expectedOutput =
+                "There are no books to give back.\r\nEnter the ID of the book you want to give back: Only enter numerical value\r\nPress any key to continue...\r\n";
+
+            Assert.Equal(expectedOutput, output.ToString());
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void TestGiveBookMenu_ShouldGiveBookBackAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var input = new StringReader("2");
+            Console.SetIn(input);
+
+            bool result = library.GiveBookMenu(testFilePathBooks);
+
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestGiveBookMenu_ShouldNotGiveBookBackAndReturnFalse()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            var input = new StringReader("1");
+            Console.SetIn(input);
+
+            bool result = library.GiveBookMenu(testFilePathBooks);
+
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestGiveBook_ShouldGiveBookBackAndReturnTrue()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            bool result = library.GiveBook(2, testFilePathBooks);
+
+            Assert.True(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void TestGiveBook_ShouldNotGiveBookBackAndReturnFalse()
+        {
+            CleanupTestDataBook();
+            CleanupTestDataUser();
+
+            var library = new Librarysystem();
+            library.IsTestMode = true;
+
+            CreateTestFile();
+
+            bool result = library.GiveBook(1, testFilePathBooks);
+
+            Assert.False(result);
+
+            // Clean up
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
         private void CreateTestFile()
         {
             //Books
