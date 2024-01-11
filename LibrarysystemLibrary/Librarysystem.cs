@@ -479,5 +479,128 @@ namespace LibrarysystemLibrary
             }
             return true;
         }
+        /**
+ * @brief Writes information about unmarked books to the console.
+ * @param pathFileBooks The file path for storing book information.
+ * @return True if there are unmarked books; otherwise, false.
+ */
+        public bool WriteUnMarkedBooksToConsole(string pathFileBooks)
+        {
+            List<Book> books = LoadBooks(pathFileBooks);
+            bool isFound = false;
+            foreach (Book book in books)
+            {
+                if (!book.IsMarked)
+                {
+                    isFound = true;
+                    string readStatus = book.IsMarked ? "Read" : "Unread";
+                    string wishlistStatus = book.IsWishlist ? "Wishlist" : "UnWishlisted";
+
+                    Console.WriteLine($"{book.Id}. {book.Name} ({readStatus} : {wishlistStatus})");
+                }
+            }
+            if (!isFound)
+            {
+                Console.WriteLine("There are no unmarked books.");
+                return false;
+            }
+            return true;
+        }
+        /**
+ * @brief Loads books from the specified file path.
+ * @param pathFileBooks The file path for storing book information.
+ * @return A list of Book objects loaded from the file. If the file doesn't exist, an empty list is returned.
+ */
+        public List<Book> LoadBooks(string pathFileBooks)
+        {
+            List<Book> books = new List<Book>();
+
+            // Checks if file path exists
+            if (File.Exists(pathFileBooks))
+            {
+                // Read books from file
+                using (BinaryReader reader = new BinaryReader(File.Open(pathFileBooks, FileMode.Open)))
+                {
+                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
+                        Book book = new Book
+                        {
+                            Id = reader.ReadInt32(),
+                            Name = reader.ReadString(),
+                            IsMarked = reader.ReadBoolean(),
+                            IsWishlist = reader.ReadBoolean(),
+                            IsLoaned = reader.ReadBoolean()
+                        };
+
+                        books.Add(book);
+                    }
+                }
+            }
+
+            return books;
+        }
+        /**
+ * @brief Main menu of the Personal Library System.
+ * @param pathFileUsers The file path for storing user information.
+ * @param pathFileBooks The file path for storing book information.
+ * @return 0 to indicate successful program completion.
+ */
+        public int Main_Menu(string pathFileUsers, string pathFileBooks)
+        {
+            int choice;
+
+            while (true)
+            {
+                ClearScreen();
+                Print_Main_Menu();
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    HandleInputError();
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        ClearScreen();
+                        if (LoginUserMenu(pathFileUsers))
+                            UserOperations(pathFileBooks);
+                        break;
+
+                    case 2:
+                        ClearScreen();
+                        RegisterMenu(pathFileUsers);
+                        break;
+
+                    case 3:
+                        ClearScreen();
+                        GuestOperation(pathFileBooks);
+                        break;
+
+                    case 4:
+                        Console.WriteLine("Exit Program");
+                        return 0;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        EnterToContinue();
+                        break;
+                }
+            }
+        }
+        /**
+ * @brief Prints the main menu options on the console.
+ * @return True to indicate successful execution.
+ */
+        public bool Print_Main_Menu()
+        {
+            Console.WriteLine("Welcome To Personal Library System\n\n");
+            Console.WriteLine("1. Login");
+            Console.WriteLine("2. Register");
+            Console.WriteLine("3. Guest Mode");
+            Console.WriteLine("4. Exit Program");
+            Console.WriteLine("Please enter a number to select:");
+            return true;
+        }
     }
 }
