@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * @file LibrarysystemLibrary.cs
+ * @brief Contains the using directives and the definitions of the Book and User classes for the Librarysystem library.
+ */
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -1131,7 +1135,6 @@ namespace LibrarysystemLibrary
         public bool RemoveFromWishListMenu(string pathFileBooks)
         {
             ClearScreen();
-            // Wishlisted olan kitapları yazdır
             WriteWhislistedBooksToConsole(pathFileBooks);
 
             Console.Write("Enter the ID of the book you want to remove from your wishlist: ");
@@ -1153,7 +1156,6 @@ namespace LibrarysystemLibrary
  */
         public bool RemoveFromWishList(int bookId, string pathFileBooks)
         {
-            // Kitapları yükle ve IsWishlist özelliğini güncelle
             List<Book> books = LoadBooks(pathFileBooks);
             bool isFound = false;
 
